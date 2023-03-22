@@ -21,39 +21,39 @@ const useAssets = (lucid?: Lucid, networkId?: number) => {
     const utxos = await lucid.wallet.getUtxos()
 
     const allUtxos = utxos
-      .map((u) => Object.keys(u.assets).map((key) => ({ key, value: u.assets[key] })))
-      .reduce((acc, curr) => [...acc, ...curr], [])
-      .map((a) => ({
-        ...fromUnit(a.key),
-        value: Number(a.value),
-      }))
+        .map((u) => Object.keys(u.assets).map((key) => ({ key, value: u.assets[key] })))
+        .reduce((acc, curr) => [...acc, ...curr], [])
+        .map((a) => ({
+          ...fromUnit(a.key),
+          value: Number(a.value),
+        }))
 
     const lovelaces = allUtxos
-      .filter((u) => u.policyId === "lovelace")
-      .reduce((acc, curr) => acc + curr.value, 0)
+        .filter((u) => u.policyId === "lovelace")
+        .reduce((acc, curr) => acc + curr.value, 0)
 
     const utxoAssets = allUtxos
-      .filter((u) => u.policyId !== "lovelace")
-      .filter((v: Value): v is ValueWithName => v.name !== null)
-      .map((a) => ({
-        ...a,
-        fullyQualifiedAssetName: `${a.policyId}${a.name}`,
-      }))
+        .filter((u) => u.policyId !== "lovelace")
+        .filter((v: Value): v is ValueWithName => v.name !== null)
+        .map((a) => ({
+          ...a,
+          fullyQualifiedAssetName: `${a.policyId}${a.name}`,
+        }))
 
     const assetsWithMetadata: Responses["asset"][] = await Promise.all(
-      utxoAssets.map((a) =>
-        fetch(`/api/blockfrost/${networkId}/assets/${a.fullyQualifiedAssetName}`).then((r) =>
-          r.json()
+        utxoAssets.map((a) =>
+            fetch(`/api/blockfrost/${networkId}/assets/${a.fullyQualifiedAssetName}`).then((r) =>
+                r.json()
+            )
         )
-      )
     )
 
     const sortedAssets = sortBy(
-      assetsWithMetadata,
-      (a) => (Number(a.quantity) === 1 ? 1 : -1),
-      "policy_id",
-      "metadata.name",
-      "onchain_metadata.name"
+        assetsWithMetadata,
+        (a) => (Number(a.quantity) === 1 ? 1 : -1),
+        "policy_id",
+        "metadata.name",
+        "onchain_metadata.name"
     )
 
     setLovelace(lovelaces)
@@ -69,5 +69,62 @@ const useAssets = (lucid?: Lucid, networkId?: number) => {
     assets,
   }
 }
+
+// const userFindAadaNFTMint = (networkId?: number) => {
+//   const [mintedNft, setMintedNft] = useState<Responses["asset"][]>([])
+//   const fetchAssets = useCallback(async () => {
+//
+//
+//     const utxos = await lucid.wallet.getUtxos()
+//
+//     const allUtxos = utxos
+//         .map((u) => Object.keys(u.assets).map((key) => ({ key, value: u.assets[key] })))
+//         .reduce((acc, curr) => [...acc, ...curr], [])
+//         .map((a) => ({
+//           ...fromUnit(a.key),
+//           value: Number(a.value),
+//         }))
+//
+//     const lovelaces = allUtxos
+//         .filter((u) => u.policyId === "lovelace")
+//         .reduce((acc, curr) => acc + curr.value, 0)
+//
+//     const utxoAssets = allUtxos
+//         .filter((u) => u.policyId !== "lovelace")
+//         .filter((v: Value): v is ValueWithName => v.name !== null)
+//         .map((a) => ({
+//           ...a,
+//           fullyQualifiedAssetName: `${a.policyId}${a.name}`,
+//         }))
+//
+//     const assetsWithMetadata: Responses["asset"][] = await Promise.all(
+//         utxoAssets.map((a) =>
+//             fetch(`/api/blockfrost/${networkId}/assets/${a.fullyQualifiedAssetName}`).then((r) =>
+//                 r.json()
+//             )
+//         )
+//     )
+//
+//     const sortedAssets = sortBy(
+//         assetsWithMetadata,
+//         (a) => (Number(a.quantity) === 1 ? 1 : -1),
+//         "policy_id",
+//         "metadata.name",
+//         "onchain_metadata.name"
+//     )
+//
+//     setLovelace(lovelaces)
+//     setAssets(sortedAssets)
+//   }, [lucid?.wallet, networkId])
+//
+//   useEffect(() => {
+//     fetchAssets()
+//   }, [fetchAssets])
+//
+//   return {
+//     lovelace,
+//     assets,
+//   }
+// }
 
 export { useAssets }

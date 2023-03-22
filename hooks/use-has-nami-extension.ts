@@ -7,7 +7,7 @@ const useHasNamiExtension = () => {
     // give the browser a chance to load the extension
     // and for it to inject itself into the window object
     const timeout = setTimeout(() => {
-      setHasNamiExtension(!!window.cardano?.nami)
+      setHasNamiExtension(!!window.cardano?.eternl)
     }, 10)
 
     return () => {

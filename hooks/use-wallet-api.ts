@@ -7,7 +7,7 @@ const useWalletApi = () => {
   useEffect(() => {
     if (!window.cardano?.nami) return
 
-    window.cardano.nami.enable().then(setWalletApi)
+    window.cardano.eternl.enable().then(setWalletApi)
   }, [])
 
   return walletApi

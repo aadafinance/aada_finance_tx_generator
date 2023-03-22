@@ -13,11 +13,10 @@ const useNetworkId = (walletApi?: WalletApi) => {
 
     walletApi.getNetworkId().then(setNetworkId)
 
-    walletApi.experimental.on("networkChange", onNetworkChange)
-
-    return () => {
-      walletApi.experimental.off("networkChange", onNetworkChange)
-    }
+    // // walletApi.experimental.on("networkChange", onNetworkChange);
+    // return () => {
+    //   walletApi.experimental.off("networkChange", onNetworkChange)
+    // }
   }, [walletApi])
 
   return networkId

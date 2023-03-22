@@ -11,14 +11,17 @@ const useLucid = () => {
   const networkId = useNetworkId(walletApi)
 
   const initializeLucid = useCallback(async () => {
+    console.log("Network id is", networkId);
     if (isNil(networkId) || isNil(walletApi)) return
+    const network = networkId === 0 ? "Preprod" : "Mainnet"
 
-    const provider = new Blockfrost(`/api/blockfrost/${networkId}`)
-    const network = networkId === 0 ? "Testnet" : "Mainnet"
-
+    const provider = new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0",
+        "mainnet1RTeXo584jV7g85wBNrEqCocde3RBWIv");
     const updatedLucid = await (isNil(lucid)
-      ? Lucid.new(provider, network)
-      : lucid.switchProvider(provider, network))
+      ? Lucid.new( provider,
+            "Mainnet",)
+      : lucid.switchProvider(provider,
+            "Mainnet",))
 
     const lucidWithWallet = updatedLucid.selectWallet(walletApi)
 

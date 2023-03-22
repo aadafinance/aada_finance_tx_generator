@@ -7,9 +7,9 @@ import { isNil } from "lodash"
 import styles from "../styles/index.module.css"
 
 const Index = () => {
-  const hasNamiExtension = useHasNamiExtension()
-  const { lucid, networkId } = useLucid()
-  const { lovelace, assets } = useAssets(lucid, networkId)
+    const hasNamiExtension = useHasNamiExtension()
+    const { lucid, networkId } = useLucid()
+    const { lovelace, assets } = useAssets(lucid, networkId)
 
   // strict equals to avoid undefined
   if (hasNamiExtension === false)
